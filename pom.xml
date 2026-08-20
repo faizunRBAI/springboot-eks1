@@ -7,7 +7,11 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.3.5</version>
+    <!-- 3.5.14 is the minimum patched release for CVE-2026-40973 and CVE-2025-22235.
+         The image_scan gate runs Trivy with --exit-code 1 on CRITICAL findings;
+         upgrading here is the only correct fix (adding to .trivyignore would
+         suppress a real, unpatched vulnerability). -->
+    <version>3.5.14</version>
     <relativePath/>
   </parent>
 
@@ -24,10 +28,10 @@
     <checkstyle.version>10.21.1</checkstyle.version>
 
     <!--
-      Overriding a version the Spring Boot BOM manages.
+      Overriding the PostgreSQL driver version managed by the Spring Boot BOM.
 
       The BOM pins a driver version that was current when that Boot release
-      shipped, and a security patch published afterwards does not reach you until
+      shipped. A security patch published afterwards does not reach you until
       the next Boot release does. The image scan blocks on exactly that gap, and
       this one line is the fix.
     -->
