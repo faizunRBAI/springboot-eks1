@@ -1,9 +1,11 @@
 package com.example.app;
 
+import com.example.app.domain.ItemRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -11,13 +13,17 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 /**
  * The endpoint contract the deploy pipeline depends on.
  *
- * <p>These run without a database on purpose: that is the {@code database=none}
- * shape, and it is also what CI has. The readiness-with-a-database path is
- * exercised by the real deploy, whose probe is the same call.
+ * <p>These run without a real database: {@link ItemRepository} is mocked so the
+ * full Spring context loads in CI without a DataSource. This mirrors the
+ * {@code database=none} deployment shape and is also the state the health probe
+ * sees on first pod startup before Flyway migrations complete.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 class HealthEndpointsTest {
+
+    @MockBean
+    ItemRepository itemRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -55,9 +61,6 @@ class HealthEndpointsTest {
 
     @Test
     void rootResolvesToTheWelcomePage() throws Exception {
-        // MockMvc does not follow the forward to a static resource, so the
-        // assertion is that Spring resolved / to the welcome page at all. The
-        // page being served with text/html is checked against a real container.
         mockMvc.perform(MockMvcRequestBuilders.get("/"))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.forwardedUrl("index.html"));

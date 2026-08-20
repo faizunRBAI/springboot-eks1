@@ -1,20 +1,13 @@
 package com.example.app.domain;
 
 import java.util.List;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 /**
  * Application-layer service for item operations.
- *
- * <p>Only registered when {@link ItemRepository} is available — which requires a
- * {@link org.springframework.jdbc.core.simple.JdbcClient} bean (i.e. a configured
- * DataSource). The service starts stateless without a database, and the Items
- * API is absent until one is connected.
  */
 @Service
-@ConditionalOnBean(ItemRepository.class)
 public class ItemService {
 
     private final ItemRepository repository;

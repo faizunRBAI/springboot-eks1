@@ -5,7 +5,6 @@ import com.example.app.domain.ItemService;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +19,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 /**
  * REST controller for the {@code /api/items} resource.
  *
- * <p>Only registered when {@link ItemService} is available — which requires a
- * database connection. All error mapping lives in {@link ApiExceptionHandler}.
+ * <p>All error mapping lives in {@link ApiExceptionHandler}.
  */
 @RestController
 @RequestMapping("/api/items")
-@ConditionalOnBean(ItemService.class)
 public class ItemController {
 
     private final ItemService service;
