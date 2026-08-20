@@ -7,7 +7,6 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <!-- Minimum patched release for CVE-2026-40973 and CVE-2025-22235. -->
     <version>3.5.14</version>
     <relativePath/>
   </parent>
@@ -21,14 +20,9 @@
   <properties>
     <java.version>21</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Checkstyle 10.x is the current stable major. -->
     <checkstyle.version>10.21.1</checkstyle.version>
-    <!--
-      Override the PostgreSQL driver version managed by the Spring Boot BOM.
-      The BOM pins a driver version current at release time; this pins a
-      patched version independently of the next Boot upgrade.
-    -->
-    <postgresql.version>42.7.4</postgresql.version>
+    <!-- Pinned above the BOM default to clear CVE-2026-42198 and CVE-2025-49146. -->
+    <postgresql.version>42.7.11</postgresql.version>
   </properties>
 
   <dependencies>
@@ -75,10 +69,6 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
 
-      <!--
-        Coding-standards gate. Bound to the validate phase so mvn verify
-        runs Checkstyle before anything is compiled.
-      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -106,10 +96,6 @@
         </executions>
       </plugin>
 
-      <!--
-        CycloneDX bill of materials. One document feeds two gates: the SBOM
-        artifact upload and the licence allowlist check.
-      -->
       <plugin>
         <groupId>org.cyclonedx</groupId>
         <artifactId>cyclonedx-maven-plugin</artifactId>
