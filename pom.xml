@@ -20,7 +20,7 @@
   <properties>
     <java.version>21</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Checkstyle 10.x is the current stable major; 10.21.1 is the latest as of mid-2026. -->
+    <!-- Checkstyle 10.x is the current stable major. -->
     <checkstyle.version>10.21.1</checkstyle.version>
 
     <!--
@@ -29,8 +29,7 @@
       The BOM pins a driver version that was current when that Boot release
       shipped, and a security patch published afterwards does not reach you until
       the next Boot release does. The image scan blocks on exactly that gap, and
-      this one line is the fix. Expect to add a line here occasionally; remove it
-      once the BOM catches up.
+      this one line is the fix.
     -->
     <postgresql.version>42.7.4</postgresql.version>
   </properties>
@@ -53,49 +52,15 @@
       <artifactId>flyway-core</artifactId>
     </dependency>
 
-    <!--
-      Every supported database driver ships in the jar.
-
-      The database module choice is made when the project is created, and it
-      only rewrites Terraform — it cannot reach into this file. Carrying all
-      five drivers (about 12 MB) is what lets one build serve postgres, mysql,
-      mariadb, oracle and both Aurora engines, with Spring selecting the driver
-      from the JDBC URL. Delete the ones you do not use once your database is
-      settled; see the licence note in .udap/docs/README.md for the Oracle one.
-    -->
+    <!-- PostgreSQL driver — the only database module selected for this project. -->
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>com.mysql</groupId>
-      <artifactId>mysql-connector-j</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mariadb.jdbc</groupId>
-      <artifactId>mariadb-java-client</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.oracle.database.jdbc</groupId>
-      <artifactId>ojdbc11</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-database-postgresql</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-mysql</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-database-oracle</artifactId>
       <scope>runtime</scope>
     </dependency>
 

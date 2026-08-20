@@ -1,6 +1,6 @@
 spring:
   application:
-    name: udap-spring-boot-eks-api
+    name: springboot-eks1
 
   # Flyway is deliberately OFF in the running application. Migrations are a
   # deploy step, not a startup side effect: every replica running them at once
@@ -9,9 +9,7 @@ spring:
   # profile before the new Deployment is applied.
   flyway:
     enabled: false
-    # {vendor} resolves to postgresql, mysql, mariadb or oracle, so one build
-    # carries the right DDL for whichever database module was chosen.
-    locations: classpath:db/migration/{vendor}
+    locations: classpath:db/migration/postgresql
 
   datasource:
     # SPRING_DATASOURCE_URL / _USERNAME / _PASSWORD arrive from the
