@@ -7,10 +7,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <!-- 3.5.14 is the minimum patched release for CVE-2026-40973 and CVE-2025-22235.
-         The image_scan gate runs Trivy with --exit-code 1 on CRITICAL findings;
-         upgrading here is the only correct fix (adding to .trivyignore would
-         suppress a real, unpatched vulnerability). -->
+    <!-- Minimum patched release for CVE-2026-40973 and CVE-2025-22235. -->
     <version>3.5.14</version>
     <relativePath/>
   </parent>
@@ -26,14 +23,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Checkstyle 10.x is the current stable major. -->
     <checkstyle.version>10.21.1</checkstyle.version>
-
     <!--
-      Overriding the PostgreSQL driver version managed by the Spring Boot BOM.
-
-      The BOM pins a driver version that was current when that Boot release
-      shipped. A security patch published afterwards does not reach you until
-      the next Boot release does. The image scan blocks on exactly that gap, and
-      this one line is the fix.
+      Override the PostgreSQL driver version managed by the Spring Boot BOM.
+      The BOM pins a driver version current at release time; this pins a
+      patched version independently of the next Boot upgrade.
     -->
     <postgresql.version>42.7.4</postgresql.version>
   </properties>
@@ -82,8 +75,10 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
 
-      <!-- The coding-standards gate. Bound to `validate` so `mvn verify` runs
-           it before anything is compiled. -->
+      <!--
+        Coding-standards gate. Bound to the validate phase so mvn verify
+        runs Checkstyle before anything is compiled.
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -111,8 +106,10 @@
         </executions>
       </plugin>
 
-      <!-- One CycloneDX bill of materials feeds two gates: the SBOM artefact
-           and the licence allowlist check. -->
+      <!--
+        CycloneDX bill of materials. One document feeds two gates: the SBOM
+        artifact upload and the licence allowlist check.
+      -->
       <plugin>
         <groupId>org.cyclonedx</groupId>
         <artifactId>cyclonedx-maven-plugin</artifactId>
