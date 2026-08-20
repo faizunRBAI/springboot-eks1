@@ -1,0 +1,31 @@
+# Accepted infrastructure findings, each with the reason it is accepted.
+# Everything not listed here is a real finding: fix it rather than adding a line.
+
+# The Kubernetes API server endpoint is publicly reachable.
+# Reason: the CI runners that deploy this project have no fixed egress address,
+# so an allowlist would break every deploy. Access is authenticated with IAM
+# and every call is written to the control-plane audit log (see eks.tf).
+# Revisit when moving to self-hosted runners with a static NAT address.
+AVD-AWS-0040
+AVD-AWS-0041
+
+# AVD-AWS-0104 (unrestricted egress) is deliberately NOT ignored. This
+# blueprint's Terraform declares no egress rules at all — the worker nodes use
+# the EKS-managed cluster security group, and the database security group is
+# ingress-only — so the rule has nothing to fire on. If you add a security
+# group with egress 0.0.0.0/0, the CRITICAL gate stopping you is working as
+# intended: either scope the egress, or add the ID here WITH the reason.
+
+# ECR repository tags are mutable.
+# Reason: a retried deploy pushes the same commit-sha tag, and an immutable
+# repository rejects it — turning every retry into a failed build. Provenance
+# still holds: the tag IS the commit sha, and the image is scanned on push.
+# Revisit if you move to digest-pinned deploys, where immutability is free.
+AVD-AWS-0031
+
+# Worker nodes run in public subnets with public IPs.
+# Reason: nodes reach ECR and the control plane over their own interface, which
+# removes a NAT gateway from the bill and the failure path. Inbound traffic is
+# restricted to the cluster security group; the load balancer is the only
+# intentional entry point. Revisit when egress filtering becomes a requirement.
+AVD-AWS-0164
