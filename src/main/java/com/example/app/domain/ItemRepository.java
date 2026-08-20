@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -13,10 +14,13 @@ import org.springframework.stereotype.Repository;
 /**
  * Thin JDBC repository for the {@code items} table.
  *
- * <p>All SQL is written here rather than in an ORM mapping so the schema and
- * the queries are in one place and easy to read in a code review.
+ * <p>Only registered as a bean when a {@link JdbcClient} is available — which
+ * in turn requires a {@code DataSource}. The service starts without a database
+ * (the {@code /health} and {@code /ready} endpoints still work), and the Items
+ * API is simply absent until a database is connected.
  */
 @Repository
+@ConditionalOnBean(JdbcClient.class)
 public class ItemRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItemRepository.class);
